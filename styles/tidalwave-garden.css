@@ -102,11 +102,21 @@
   --tw-measure:         42rem;       /* ~72 characters at 17px               */
 
   /* ---- Revision History columns ----------------------------------------- */
-  /* Identical proportions to the print layer. Must total 100%.             */
-  --tw-rev-version:     10%;
+  /* Deliberately NOT the same numbers as the print layer, which uses
+     10/16/11/63. Print sets its headers at 8.5pt over a 6.9in measure; the
+     web sets them at 13px uppercase with letter-spacing over a 42rem
+     measure, so the header text occupies proportionally more of its column.
+     Carrying the print values over squeezed "VERSION" until it broke in half.
+
+     Measured on a rendered page at 542px table width, including 8px of cell
+     padding — the width each column actually needs:
+        Version  65px -> 12.0%      Author          61px -> 11.3%
+        Date     81px -> 14.9%      Change Summary  remainder
+     The values below add headroom on top of those minimums. Must total 100%. */
+  --tw-rev-version:     13%;
   --tw-rev-date:        16%;
-  --tw-rev-author:      11%;
-  --tw-rev-summary:     63%;
+  --tw-rev-author:      13%;
+  --tw-rev-summary:     58%;
 }
 
 /* Forestry's own documented hooks, kept in step with the tokens above. */
@@ -525,8 +535,23 @@ main.content tbody tr:hover { background: var(--tw-bg-subtle); }
    markdown but not in the DOM: `:last-of-type` scopes to siblings, so it
    never constrained anything, and the rule silently reached every
    four-column table in the vault.                                          */
+/* Both forms are needed. The markdown rule tags the `table_open` token, but
+   the garden's renderer wraps tables in `div.table-wrapper` and moves the
+   token's classes onto that wrapper — so in practice the class lands on the
+   div, not the table. Verified in the rendered DOM:
+   `<div class="tw-revision table-wrapper"><table>`. The `table.tw-revision`
+   form is kept in case that ever changes, or for any other renderer.       */
 main.content table.tw-revision,
 main.content .tw-revision table { table-layout: fixed !important; }
+
+/* A column that is a little too narrow should overflow, not shatter its
+   header mid-word. Something upstream sets break-anywhere behaviour, which
+   is how "VERSION" became "VERSIO / N" rather than simply being tight.    */
+main.content :is(table.tw-revision, .tw-revision table) th {
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  hyphens: none !important;
+}
 
 main.content :is(table.tw-revision, .tw-revision table) :is(th, td):nth-child(1) { width: var(--tw-rev-version); }
 
