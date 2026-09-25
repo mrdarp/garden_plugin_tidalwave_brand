@@ -39,7 +39,17 @@ const KINDS = {
   "%": "muted",
 };
 
-const DEFAULT_MARKERS = "!@&";
+/**
+ * Every marker the Obsidian List Callouts plugin ships by default.
+ *
+ * This deliberately covers the full set rather than only the ones currently
+ * in use. A narrower default fails silently: an unlisted marker publishes as
+ * literal text at the head of the bullet, and nothing anywhere reports it.
+ * Requiring a following space keeps ordinary prose safe, and a sweep of the
+ * vault found no bullet where a marker character plus a space was anything
+ * other than a callout.
+ */
+const DEFAULT_MARKERS = "!@&?~$%";
 
 /**
  * Build the core rule.

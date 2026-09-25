@@ -1,7 +1,7 @@
 {
   "id": "tidalwave-brand",
   "name": "Tidalwave Brand",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "House typography, color and section styling for Tidalwave training documentation, plus markdown support for Obsidian List Callouts markers.",
   "author": "Sean",
   "styles": [
@@ -12,9 +12,9 @@
     {
       "key": "markers",
       "name": "List callout markers",
-      "description": "Characters that mark a list item as a callout when they appear at the start of the item followed by a space. Must match the markers configured in the Obsidian List Callouts plugin. Default covers the three in active use.",
+      "description": "Characters that mark a list item as a callout when they appear at the start of the item followed by a space. Defaults to the full set the Obsidian List Callouts plugin ships. A marker left out of this list publishes as literal text, so removing one is rarely what you want.",
       "type": "text",
-      "default": "!@&"
+      "default": "!@&?~$%"
     }
   ]
 }

@@ -62,6 +62,8 @@
   --tw-info:            #0077BB;  --tw-info-wash:     #EFF8FC;
   --tw-success:         #067647;  --tw-success-wash:  #ECFDF3;
   --tw-query:           #6941C6;  --tw-query-wash:    #F4F3FF;
+  --tw-amber:           #A16207;  --tw-amber-wash:    #FEFBE8;
+  --tw-orange:          #C2410C;  --tw-orange-wash:   #FFF6ED;
   --tw-neutral:         #595959;  --tw-neutral-wash:  #F5F7F9;
 
   /* ---- Typeface --------------------------------------------------------- */
@@ -602,22 +604,30 @@ li.lc-list-callout::before {
 /* A callout bullet's own nested list shouldn't inherit the treatment. */
 li.lc-list-callout > ul > li:not(.lc-list-callout) { list-style: disc; }
 
+/* Hues track the Obsidian List Callouts plugin's own palette, so a marker
+   reads the same in the editor as it does here — darkened where needed to
+   clear WCAG AA, since the glyph is text.
+
+     !  red     @  cyan/blue   &  yellow -> amber
+     ?  orange  ~  purple      $  green      %  grey                       */
 li.lc-warning   { border-left-color: var(--tw-hazard); }
 li.lc-warning::before   { color: var(--tw-hazard); }
 
 li.lc-reference { border-left-color: var(--tw-info); }
 li.lc-reference::before { color: var(--tw-info); }
 
-li.lc-aside     { border-left-color: var(--tw-query); }
-li.lc-aside::before     { color: var(--tw-query); }
+li.lc-aside     { border-left-color: var(--tw-amber); }
+li.lc-aside::before     { color: var(--tw-amber); }
 
-li.lc-question  { border-left-color: var(--tw-query); }
-li.lc-question::before  { color: var(--tw-query); }
+li.lc-question  { border-left-color: var(--tw-orange); }
+li.lc-question::before  { color: var(--tw-orange); }
+
+li.lc-note      { border-left-color: var(--tw-query); }
+li.lc-note::before      { color: var(--tw-query); }
 
 li.lc-success   { border-left-color: var(--tw-success); }
 li.lc-success::before   { color: var(--tw-success); }
 
-li.lc-note,
 li.lc-muted,
 li.lc-generic   { border-left-color: var(--tw-neutral); }
 

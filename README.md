@@ -28,21 +28,23 @@ Paste this repository's URL into **Settings → Digital Garden → Plugins → I
 
 | Setting | Default | Description |
 |---|---|---|
-| List callout markers | `!@&` | Characters treated as callout markers when they start a list item and are followed by a space. Should match what's configured in the Obsidian List Callouts plugin. |
+| List callout markers | `!@&?~$%` | Characters treated as callout markers when they start a list item and are followed by a space. |
 
-Supported marker characters and the class each produces:
+The default is the full set the Obsidian List Callouts plugin ships, not a subset. **Leaving a marker out fails silently** — it publishes as literal text at the head of the bullet and nothing reports it — so narrowing this list is rarely what you want.
 
-| Marker | Class | Color role |
+Marker, class, and the hue each gets. Colors track the Obsidian plugin's own palette so a marker reads the same in the editor as it does on the site, darkened where needed to clear WCAG AA since the glyph is text:
+
+| Marker | Class | Colour |
 |---|---|---|
-| `!` | `lc-warning` | hazard |
-| `@` | `lc-reference` | informational |
-| `&` | `lc-aside` | supplementary |
-| `?` | `lc-question` | supplementary |
-| `~` | `lc-note` | neutral |
-| `$` | `lc-success` | success |
-| `%` | `lc-muted` | neutral |
+| `!` | `lc-warning` | red |
+| `@` | `lc-reference` | blue |
+| `&` | `lc-aside` | amber |
+| `?` | `lc-question` | orange |
+| `~` | `lc-note` | purple |
+| `$` | `lc-success` | green |
+| `%` | `lc-muted` | grey |
 
-Any marker not in this table still works and gets `lc-generic`.
+Any other character added to the setting still works and gets `lc-generic`.
 
 ## Theming
 
