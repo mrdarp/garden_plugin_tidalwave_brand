@@ -52,6 +52,14 @@ The stylesheet sets `--dg-content-max-width` and `--dg-content-font-size` from i
 
 > **Note on accessibility.** The brand accent `#0091E2` measures 3.4:1 against white, which fails WCAG AA for body text. The token set splits this into `--tw-accent` for rules and marks, where contrast minimums don't apply, and `--tw-accent-link` (`#0077BB`, 4.8:1) for anything that is text. If you retune the palette, keep that split.
 
+## Scoping
+
+Content styling is scoped to `<main>`. This is deliberate and load-bearing: the garden's own interface is built from the same elements as its content — the table of contents is an `<ol>`, the file tree a `<ul>` — so unscoped rules leak into site furniture. An unscoped procedure-step counter renders its numbers on top of the sidebar links.
+
+A reset block additionally restores theme defaults for lists and headings inside `nav`, `aside`, `header`, `footer`, and any element whose class contains `toc`, `sidebar`, `filetree`, `nav`, `graph` or `search`, in case a given template places chrome inside `<main>`.
+
+Base typography — body font, links, code, focus rings — is intentionally global.
+
 ## Behaviour notes
 
 - The marker must be followed by a space. `!important` at the start of a bullet is left alone.

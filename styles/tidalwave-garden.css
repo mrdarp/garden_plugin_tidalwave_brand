@@ -250,23 +250,33 @@ a.header-anchor {
    ---------------------------------------------------------------------------
    Counter-driven left rail, matching print. Numbers take the bright accent
    here rather than print's black.
+
+   SCOPED TO `main`, AND THIS MATTERS. The garden's own UI is built from
+   lists too — the table of contents is an <ol>, the file tree a <ul>. An
+   unscoped `ol > li::before` injects step numbers into the sidebar, where
+   they land absolutely positioned on top of the link text. The slot
+   documentation places note content inside <main> and the sidebar outside
+   it, so that's the boundary.
+
+   The reset block at the end of this section is a second line of defence
+   for any chrome that turns out to live inside <main> after all.
    --------------------------------------------------------------------------- */
 
-ol {
+main ol {
   counter-reset: tw-step;
   list-style: none;
   padding-left: 0;
   margin: 0 0 var(--tw-space-para) 0;
 }
 
-ol > li {
+main ol > li {
   counter-increment: tw-step;
   position: relative;
   padding-left: 2.4em;
   margin-bottom: calc(var(--tw-space) * 1.1);
 }
 
-ol > li::before {
+main ol > li::before {
   content: counter(tw-step) ".";
   position: absolute;
   left: 0;
@@ -277,24 +287,68 @@ ol > li::before {
   color: var(--tw-accent-link);
 }
 
-ol ol { counter-reset: tw-substep; margin-top: calc(var(--tw-space) * 0.8); }
+main ol ol { counter-reset: tw-substep; margin-top: calc(var(--tw-space) * 0.8); }
 
-ol ol > li::before {
+main ol ol > li::before {
   counter-increment: tw-substep;
   content: counter(tw-substep, lower-alpha) ".";
   font-weight: var(--tw-weight-medium);
 }
 
-ul {
+main ul {
   padding-left: 1.35em;
   margin: 0 0 var(--tw-space-para) 0;
 }
 
-ul > li { margin-bottom: calc(var(--tw-space) * 0.55); }
+main ul > li { margin-bottom: calc(var(--tw-space) * 0.55); }
 
-ul > li::marker { color: var(--tw-ink-faint); }
+main ul > li::marker { color: var(--tw-ink-faint); }
 
-li > ul, li > ol { margin-top: calc(var(--tw-space) * 0.6); margin-bottom: 0; }
+main li > ul,
+main li > ol { margin-top: calc(var(--tw-space) * 0.6); margin-bottom: 0; }
+
+
+/* ---- Chrome list reset ------------------------------------------------- */
+/* Site furniture keeps the theme's own list rendering, whatever its
+   position in the document. Anything matched here is navigation, not
+   content, and must never receive procedure-step treatment.              */
+:is(nav, aside, header, footer,
+    [class*="toc"], [class*="sidebar"], [class*="filetree"],
+    [class*="nav"], [class*="graph"], [class*="search"]) :is(ol, ul) {
+  counter-reset: none !important;
+  list-style: revert;
+  padding-left: revert;
+  margin: revert;
+}
+
+:is(nav, aside, header, footer,
+    [class*="toc"], [class*="sidebar"], [class*="filetree"],
+    [class*="nav"], [class*="graph"], [class*="search"]) :is(ol, ul) > li {
+  counter-increment: none !important;
+  position: static;
+  padding-left: revert;
+  margin-bottom: revert;
+}
+
+:is(nav, aside, header, footer,
+    [class*="toc"], [class*="sidebar"], [class*="filetree"],
+    [class*="nav"], [class*="graph"], [class*="search"]) :is(ol, ul) > li::before {
+  content: none !important;
+}
+
+/* Headings in site furniture keep the theme's rendering too — a heading rule
+   written for document sections puts a hairline and 2.25rem of space above
+   anything it reaches, which is wrong for a sidebar label.                 */
+:is(nav, aside, header, footer,
+    [class*="toc"], [class*="sidebar"], [class*="filetree"],
+    [class*="nav"], [class*="graph"], [class*="search"]) :is(h1, h2, h3, h4, h5, h6) {
+  border: none !important;
+  padding-top: 0 !important;
+  margin: revert;
+  font-size: revert;
+  font-weight: revert;
+  letter-spacing: revert;
+}
 
 
 /* ---------------------------------------------------------------------------
@@ -553,7 +607,7 @@ li.lc-generic   { border-left-color: var(--tw-neutral); }
 
   body { padding-left: 1rem; padding-right: 1rem; }
 
-  ol > li { padding-left: 2em; }
+  main ol > li { padding-left: 2em; }
 
   /* Every table becomes horizontally scrollable rather than crushing its
      columns to unreadable widths.                                          */

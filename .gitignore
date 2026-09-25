@@ -1,0 +1,7 @@
+# macOS
+.DS_Store
+
+# Editor / agent scaffolding — not part of the plugin
+.agents/
+.claude/
+skills-lock.json
