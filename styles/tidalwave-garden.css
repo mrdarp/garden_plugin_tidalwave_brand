@@ -1,0 +1,572 @@
+/* ============================================================================
+   TIDALWAVE — FORESTRY.MD GARDEN LAYER
+   ----------------------------------------------------------------------------
+   Companion to `Tidalwave Print.css`. Same document, different medium.
+
+   Shared with print:  type scale ratios, spacing rhythm, section grammar,
+                       Revision History column proportions, uppercase callout
+                       titles, sentence-case headings.
+   Different on web:   real brand color instead of mono substitutes, semantic
+                       callout colors, links, hover and focus states, a light
+                       base, and a responsive measure.
+   Not present here:   running header / footer. The site logo is handled by
+                       Forestry's own logo setting, not by this stylesheet.
+
+   Single self-contained file, no build step and no partials, so it can be
+   delivered by any of the three routes (see README). Only the @font-face
+   import reaches outside it.
+   ============================================================================ */
+
+
+/* ---------------------------------------------------------------------------
+   1. WEBFONT
+   ---------------------------------------------------------------------------
+   Replace XXXXXXX with the project ID from Adobe Fonts → Web Projects.
+   The web family name is NOT the desktop one — Adobe serves Bio Sans as the
+   lowercase-hyphenated `bio-sans`. Both spellings are in the stack below so
+   this degrades cleanly until the project exists.
+   --------------------------------------------------------------------------- */
+
+@import url("https://use.typekit.net/ckd7xrb.css");
+
+
+/* ---------------------------------------------------------------------------
+   2. TOKENS
+   --------------------------------------------------------------------------- */
+
+:root {
+  /* ---- Brand ------------------------------------------------------------ */
+  --tw-accent:          #0091E2;   /* rules, bars, marks — non-text uses     */
+  --tw-accent-link:     #0077BB;   /* text uses only. See note.              */
+  --tw-accent-wash:     #EFF8FC;
+
+  /* #0091E2 on white measures 3.4:1 contrast, which fails WCAG AA for body
+     text (4.5:1). --tw-accent-link is the same hue darkened to 4.8:1 and is
+     what link and inline text should use. Keep the bright accent for rules,
+     bars and icons, where the contrast minimum doesn't apply.               */
+
+  /* ---- Surface & ink ---------------------------------------------------- */
+  --tw-bg:              #FFFFFF;
+  --tw-bg-subtle:       #F5F7F9;
+  --tw-ink:             #1A1A1A;
+  --tw-ink-muted:       #595959;
+  --tw-ink-faint:       #8A8A8A;
+  --tw-rule:            #E4E7EB;
+  --tw-rule-strong:     #C4C9CF;
+
+  /* ---- Semantic callout colors ------------------------------------------ */
+  /* Print collapses these to rule weights because mono can't carry hue.
+     The web has no such constraint, so in-document color reads naturally.
+     Each pair is an edge/label color and a background wash.                 */
+  --tw-hazard:          #B42318;  --tw-hazard-wash:   #FEF3F2;
+  --tw-info:            #0077BB;  --tw-info-wash:     #EFF8FC;
+  --tw-success:         #067647;  --tw-success-wash:  #ECFDF3;
+  --tw-query:           #6941C6;  --tw-query-wash:    #F4F3FF;
+  --tw-neutral:         #595959;  --tw-neutral-wash:  #F5F7F9;
+
+  /* ---- Typeface --------------------------------------------------------- */
+  --tw-font: "bio-sans", "Bio Sans", "BioSans",
+             -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+             Arial, sans-serif;
+  --tw-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* ---- Type scale ------------------------------------------------------- */
+  /* Ratios match the print layer; absolute sizes are larger because screen
+     reading distance is greater than paper and screens resolve less detail.
+     Print 11pt body : 13pt h2 : 19pt h1  ->  1 : 1.18 : 1.73
+     Web  17px body : 20px h2 : 30px h1   ->  1 : 1.18 : 1.76              */
+  --tw-size-base:       1.0625rem;   /* 17px */
+  --tw-size-h1:         1.875rem;    /* 30px */
+  --tw-size-h2:         1.25rem;     /* 20px */
+  --tw-size-h3:         1.0625rem;   /* 17px, distinguished by weight       */
+  --tw-size-small:      0.875rem;    /* 14px */
+  --tw-lh:              1.65;
+
+  --tw-weight-body:     400;
+  --tw-weight-medium:   500;
+  --tw-weight-bold:     600;
+
+  /* ---- Spacing rhythm --------------------------------------------------- */
+  /* Same asymmetry as print: more space above a heading than below it, so
+     the heading binds to what follows rather than floating between blocks. */
+  --tw-space:           0.5rem;
+  --tw-space-above-h2:  2.25rem;
+  --tw-space-below-h2:  0.65rem;
+  --tw-space-above-h3:  1.5rem;
+  --tw-space-below-h3:  0.35rem;
+  --tw-space-para:      0.9rem;
+
+  /* ---- Measure ---------------------------------------------------------- */
+  --tw-measure:         42rem;       /* ~72 characters at 17px               */
+
+  /* ---- Revision History columns ----------------------------------------- */
+  /* Identical proportions to the print layer. Must total 100%.             */
+  --tw-rev-version:     10%;
+  --tw-rev-date:        16%;
+  --tw-rev-author:      11%;
+  --tw-rev-summary:     63%;
+}
+
+/* Forestry's own documented hooks, kept in step with the tokens above. */
+:root {
+  --dg-content-max-width: var(--tw-measure);
+  --dg-content-font-size: var(--tw-size-base);
+}
+
+
+/* ---------------------------------------------------------------------------
+   3. BASE
+   --------------------------------------------------------------------------- */
+
+body {
+  font-family: var(--tw-font) !important;
+  font-size: var(--tw-size-base);
+  line-height: var(--tw-lh);
+  color: var(--tw-ink);
+  background: var(--tw-bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+p { margin: 0 0 var(--tw-space-para) 0; }
+
+strong { font-weight: var(--tw-weight-bold); }
+
+/* Links. Underline is offset and thinned so it doesn't collide with
+   descenders — this matters at 17px more than it does in print.           */
+a {
+  color: var(--tw-accent-link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+  transition: color 120ms ease, background-color 120ms ease;
+}
+
+a:hover {
+  color: var(--tw-accent);
+  text-decoration-thickness: 2px;
+}
+
+/* Keyboard navigation has to stay visible — several of these documents are
+   long reference pages that people will tab through.                       */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--tw-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+code {
+  font-family: var(--tw-font-mono);
+  font-size: 0.9em;
+  background: var(--tw-bg-subtle);
+  color: var(--tw-ink);
+  padding: 0.12em 0.35em;
+  border-radius: 3px;
+}
+
+pre {
+  background: var(--tw-bg-subtle);
+  border: 1px solid var(--tw-rule);
+  border-radius: 6px;
+  padding: var(--tw-space) calc(var(--tw-space) * 1.5);
+  overflow-x: auto;
+}
+
+pre code { background: none; padding: 0; }
+
+hr {
+  border: none;
+  border-top: 1px solid var(--tw-rule);
+  margin: calc(var(--tw-space) * 4) 0;
+}
+
+
+/* ---------------------------------------------------------------------------
+   4. HEADINGS
+   ---------------------------------------------------------------------------
+   Same grammar as print: an accent rule under the title, a hairline above
+   each major section, sentence case throughout. Only the colors differ.
+   --------------------------------------------------------------------------- */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--tw-font);
+  color: var(--tw-ink);
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: var(--tw-size-h1);
+  font-weight: var(--tw-weight-bold);
+  letter-spacing: -0.015em;
+  margin: 0 0 calc(var(--tw-space) * 2) 0;
+  padding-bottom: calc(var(--tw-space) * 1.2);
+  border-bottom: 3px solid var(--tw-accent);
+}
+
+h2 {
+  font-size: var(--tw-size-h2);
+  font-weight: var(--tw-weight-bold);
+  margin: var(--tw-space-above-h2) 0 var(--tw-space-below-h2) 0;
+  padding-top: calc(var(--tw-space) * 1.2);
+  border-top: 1px solid var(--tw-rule);
+}
+
+h2:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+h3 {
+  font-size: var(--tw-size-h3);
+  font-weight: var(--tw-weight-bold);
+  margin: var(--tw-space-above-h3) 0 var(--tw-space-below-h3) 0;
+}
+
+h4, h5, h6 {
+  font-size: var(--tw-size-base);
+  font-weight: var(--tw-weight-bold);
+  font-style: italic;
+  margin: var(--tw-space-above-h3) 0 var(--tw-space-below-h3) 0;
+}
+
+/* Anchor links on hover, a web affordance print has no equivalent for. */
+h2:hover > a.header-anchor,
+h3:hover > a.header-anchor { opacity: 1; }
+
+a.header-anchor {
+  opacity: 0;
+  text-decoration: none;
+  color: var(--tw-ink-faint);
+  margin-left: 0.35em;
+  transition: opacity 120ms ease;
+}
+
+
+/* ---------------------------------------------------------------------------
+   5. PROCEDURE LISTS
+   ---------------------------------------------------------------------------
+   Counter-driven left rail, matching print. Numbers take the bright accent
+   here rather than print's black.
+   --------------------------------------------------------------------------- */
+
+ol {
+  counter-reset: tw-step;
+  list-style: none;
+  padding-left: 0;
+  margin: 0 0 var(--tw-space-para) 0;
+}
+
+ol > li {
+  counter-increment: tw-step;
+  position: relative;
+  padding-left: 2.4em;
+  margin-bottom: calc(var(--tw-space) * 1.1);
+}
+
+ol > li::before {
+  content: counter(tw-step) ".";
+  position: absolute;
+  left: 0;
+  width: 1.9em;
+  text-align: right;
+  font-weight: var(--tw-weight-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--tw-accent-link);
+}
+
+ol ol { counter-reset: tw-substep; margin-top: calc(var(--tw-space) * 0.8); }
+
+ol ol > li::before {
+  counter-increment: tw-substep;
+  content: counter(tw-substep, lower-alpha) ".";
+  font-weight: var(--tw-weight-medium);
+}
+
+ul {
+  padding-left: 1.35em;
+  margin: 0 0 var(--tw-space-para) 0;
+}
+
+ul > li { margin-bottom: calc(var(--tw-space) * 0.55); }
+
+ul > li::marker { color: var(--tw-ink-faint); }
+
+li > ul, li > ol { margin-top: calc(var(--tw-space) * 0.6); margin-bottom: 0; }
+
+
+/* ---------------------------------------------------------------------------
+   6. CALLOUTS
+   ---------------------------------------------------------------------------
+   Print flattens these to rule weights because monochrome can't carry hue.
+   Here they keep their semantic color. Structure is identical: a left edge,
+   an uppercase label, and content indented from it.
+   --------------------------------------------------------------------------- */
+
+.callout {
+  border: none;
+  border-left: 3px solid var(--tw-neutral);
+  border-radius: 0 4px 4px 0;
+  background: var(--tw-neutral-wash);
+  padding: calc(var(--tw-space) * 1.4) calc(var(--tw-space) * 1.8);
+  margin: calc(var(--tw-space) * 2.5) 0;
+}
+
+.callout-title {
+  font-size: var(--tw-size-small);
+  font-weight: var(--tw-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--tw-neutral);
+  margin: 0 0 calc(var(--tw-space) * 0.7) 0;
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+}
+
+/* Icons are kept on the web — unlike print, they carry color here and cost
+   nothing. The label still does the work if they fail to load.            */
+.callout-icon svg { width: 1em; height: 1em; }
+
+.callout-content > :last-child { margin-bottom: 0; }
+
+.callout[data-callout="caution"],
+.callout[data-callout="warning"],
+.callout[data-callout="danger"],
+.callout[data-callout="error"],
+.callout[data-callout="attention"] {
+  border-left-color: var(--tw-hazard);
+  background: var(--tw-hazard-wash);
+}
+.callout[data-callout="caution"] .callout-title,
+.callout[data-callout="warning"] .callout-title,
+.callout[data-callout="danger"] .callout-title,
+.callout[data-callout="error"] .callout-title,
+.callout[data-callout="attention"] .callout-title { color: var(--tw-hazard); }
+
+.callout[data-callout="note"],
+.callout[data-callout="info"],
+.callout[data-callout="abstract"],
+.callout[data-callout="summary"] {
+  border-left-color: var(--tw-info);
+  background: var(--tw-info-wash);
+}
+.callout[data-callout="note"] .callout-title,
+.callout[data-callout="info"] .callout-title,
+.callout[data-callout="abstract"] .callout-title,
+.callout[data-callout="summary"] .callout-title { color: var(--tw-info); }
+
+.callout[data-callout="tip"],
+.callout[data-callout="hint"],
+.callout[data-callout="success"],
+.callout[data-callout="check"],
+.callout[data-callout="done"] {
+  border-left-color: var(--tw-success);
+  background: var(--tw-success-wash);
+}
+.callout[data-callout="tip"] .callout-title,
+.callout[data-callout="hint"] .callout-title,
+.callout[data-callout="success"] .callout-title,
+.callout[data-callout="check"] .callout-title,
+.callout[data-callout="done"] .callout-title { color: var(--tw-success); }
+
+.callout[data-callout="question"],
+.callout[data-callout="help"],
+.callout[data-callout="faq"],
+.callout[data-callout="example"] {
+  border-left-color: var(--tw-query);
+  background: var(--tw-query-wash);
+}
+.callout[data-callout="question"] .callout-title,
+.callout[data-callout="help"] .callout-title,
+.callout[data-callout="faq"] .callout-title,
+.callout[data-callout="example"] .callout-title { color: var(--tw-query); }
+
+
+/* ---------------------------------------------------------------------------
+   7. TABLES
+   --------------------------------------------------------------------------- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--tw-size-small);
+  margin: calc(var(--tw-space) * 2) 0;
+}
+
+th {
+  text-align: left;
+  font-weight: var(--tw-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8125rem;
+  color: var(--tw-ink-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid var(--tw-ink);
+  padding: calc(var(--tw-space) * 0.8) calc(var(--tw-space) * 1) calc(var(--tw-space) * 0.8) 0;
+}
+
+td {
+  border: none;
+  border-bottom: 1px solid var(--tw-rule);
+  padding: calc(var(--tw-space) * 1) calc(var(--tw-space) * 1) calc(var(--tw-space) * 1) 0;
+  vertical-align: top;
+}
+
+tbody tr:hover { background: var(--tw-bg-subtle); }
+
+/* Revision History — same proportions and the same explicit targeting as the
+   print layer. Wrap the table in the markdown:
+
+       <div class="tw-revision">
+
+       | Version | Date | Author | Change Summary |
+       ...
+
+       </div>
+
+   The blank lines inside the div are required, or the content is treated as
+   raw HTML rather than parsed as markdown.
+
+   This deliberately does NOT use a positional selector. An earlier version
+   matched `table:last-of-type` with four columns, which looked safe in the
+   markdown but not in the DOM: `:last-of-type` scopes to siblings, so it
+   never constrained anything, and the rule silently reached every
+   four-column table in the vault.                                          */
+.tw-revision table { table-layout: fixed; }
+
+.tw-revision :is(th, td):nth-child(1) { width: var(--tw-rev-version); }
+
+.tw-revision :is(th, td):nth-child(2) {
+  width: var(--tw-rev-date);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.tw-revision :is(th, td):nth-child(3) { width: var(--tw-rev-author); }
+.tw-revision :is(th, td):nth-child(4) { width: var(--tw-rev-summary); }
+
+/* Wide reference tables scroll rather than squeeze. Print can't do this, so
+   it shrinks the type instead — this is the better answer where it's
+   available.                                                               */
+table:has(th:nth-child(6)) {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+}
+
+
+/* ---------------------------------------------------------------------------
+   8. PRINT-ONLY ARTEFACTS THAT MUST NOT APPEAR ON THE WEB
+   ---------------------------------------------------------------------------
+   The Page Break plugin writes literal HTML into the markdown:
+     <div class="page-break"><span class="page-break-label">Page break. An
+     empty line after the break is required.</span></div>
+   Forestry passes raw HTML straight through, and none of the plugin's CSS
+   travels with it — so without this block, that instruction sentence is
+   published as visible body text on every document that uses a page break.
+   Page breaks themselves are meaningless on a continuously scrolling page.
+   --------------------------------------------------------------------------- */
+
+.page-break,
+.page-break-label { display: none !important; }
+
+
+/* ---------------------------------------------------------------------------
+   9. LIST CALLOUTS
+   ---------------------------------------------------------------------------
+   Driven by the markdown-it rule in `index.js`, which strips the leading
+   marker and records it on the <li>:
+
+       - ! Do not cut into the mesh.
+       ->  <li class="lc-list-callout lc-warning" data-lc="!">…
+
+   The glyph is restored here from the data attribute rather than left in the
+   text, so it can be positioned and colored independently of the content.
+
+   Structure mirrors the print layer — a left rule with the marker in the
+   gutter — but print flattens all of these to one rule weight because
+   monochrome can't distinguish them by hue. Here each kind keeps its color.
+   --------------------------------------------------------------------------- */
+
+li.lc-list-callout {
+  list-style: none;
+  position: relative;
+  padding-left: 1.5em;
+  padding-top: 0.05em;
+  padding-bottom: 0.05em;
+  border-left: 2px solid var(--tw-neutral);
+  margin-left: -0.3em;
+}
+
+li.lc-list-callout::before {
+  content: attr(data-lc);
+  position: absolute;
+  left: 0.5em;
+  top: 0.05em;
+  font-weight: var(--tw-weight-bold);
+  color: var(--tw-neutral);
+  line-height: inherit;
+}
+
+/* A callout bullet's own nested list shouldn't inherit the treatment. */
+li.lc-list-callout > ul > li:not(.lc-list-callout) { list-style: disc; }
+
+li.lc-warning   { border-left-color: var(--tw-hazard); }
+li.lc-warning::before   { color: var(--tw-hazard); }
+
+li.lc-reference { border-left-color: var(--tw-info); }
+li.lc-reference::before { color: var(--tw-info); }
+
+li.lc-aside     { border-left-color: var(--tw-query); }
+li.lc-aside::before     { color: var(--tw-query); }
+
+li.lc-question  { border-left-color: var(--tw-query); }
+li.lc-question::before  { color: var(--tw-query); }
+
+li.lc-success   { border-left-color: var(--tw-success); }
+li.lc-success::before   { color: var(--tw-success); }
+
+li.lc-note,
+li.lc-muted,
+li.lc-generic   { border-left-color: var(--tw-neutral); }
+
+
+/* ---------------------------------------------------------------------------
+   10. RESPONSIVE
+   ---------------------------------------------------------------------------
+   These get read on phones on the shop floor, so the small breakpoint is a
+   real use case rather than a formality.
+   --------------------------------------------------------------------------- */
+
+@media (max-width: 45rem) {
+  :root {
+    --tw-size-base:      1rem;
+    --tw-size-h1:        1.625rem;
+    --tw-size-h2:        1.1875rem;
+    --tw-space-above-h2: 1.75rem;
+  }
+
+  body { padding-left: 1rem; padding-right: 1rem; }
+
+  ol > li { padding-left: 2em; }
+
+  /* Every table becomes horizontally scrollable rather than crushing its
+     columns to unreadable widths.                                          */
+  table { display: block; overflow-x: auto; }
+
+  .tw-revision table {
+    table-layout: auto;
+    white-space: normal;
+  }
+}
+
+/* Honour reduced-motion preferences — the only motion here is link and
+   anchor transitions, but they're cheap to turn off.                       */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

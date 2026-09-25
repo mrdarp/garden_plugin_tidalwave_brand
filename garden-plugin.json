@@ -1,0 +1,20 @@
+{
+  "id": "tidalwave-brand",
+  "name": "Tidalwave Brand",
+  "version": "0.1.0",
+  "description": "House typography, color and section styling for Tidalwave training documentation, plus markdown support for Obsidian List Callouts markers.",
+  "author": "Sean",
+  "styles": [
+    "styles/tidalwave-garden.css"
+  ],
+  "hooks": "index.js",
+  "settings": [
+    {
+      "key": "markers",
+      "name": "List callout markers",
+      "description": "Characters that mark a list item as a callout when they appear at the start of the item followed by a space. Must match the markers configured in the Obsidian List Callouts plugin. Default covers the three in active use.",
+      "type": "text",
+      "default": "!@&"
+    }
+  ]
+}
