@@ -477,14 +477,15 @@ main li > ol { margin-top: calc(var(--tw-space) * 0.6); margin-bottom: 0; }
    7. TABLES
    --------------------------------------------------------------------------- */
 
-table {
+main.content table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
   font-size: var(--tw-size-small);
   margin: calc(var(--tw-space) * 2) 0;
 }
 
-th {
+main.content th {
   text-align: left;
   font-weight: var(--tw-weight-bold);
   text-transform: uppercase;
@@ -492,19 +493,19 @@ th {
   font-size: 0.8125rem;
   color: var(--tw-ink-muted);
   background: none;
-  border: none;
-  border-bottom: 2px solid var(--tw-ink);
-  padding: calc(var(--tw-space) * 0.8) calc(var(--tw-space) * 1) calc(var(--tw-space) * 0.8) 0;
+  border: none !important;
+  border-bottom: 2px solid var(--tw-ink) !important;
+  padding: calc(var(--tw-space) * 0.8) calc(var(--tw-space) * 1) calc(var(--tw-space) * 0.8) 0 !important;
 }
 
-td {
-  border: none;
-  border-bottom: 1px solid var(--tw-rule);
-  padding: calc(var(--tw-space) * 1) calc(var(--tw-space) * 1) calc(var(--tw-space) * 1) 0;
+main.content td {
+  border: none !important;
+  border-bottom: 1px solid var(--tw-rule) !important;
+  padding: calc(var(--tw-space) * 1) calc(var(--tw-space) * 1) calc(var(--tw-space) * 1) 0 !important;
   vertical-align: top;
 }
 
-tbody tr:hover { background: var(--tw-bg-subtle); }
+main.content tbody tr:hover { background: var(--tw-bg-subtle); }
 
 /* Revision History — same proportions and the same explicit targeting as the
    print layer. Wrap the table in the markdown:
@@ -524,23 +525,24 @@ tbody tr:hover { background: var(--tw-bg-subtle); }
    markdown but not in the DOM: `:last-of-type` scopes to siblings, so it
    never constrained anything, and the rule silently reached every
    four-column table in the vault.                                          */
-.tw-revision table { table-layout: fixed; }
+main.content table.tw-revision,
+main.content .tw-revision table { table-layout: fixed !important; }
 
-.tw-revision :is(th, td):nth-child(1) { width: var(--tw-rev-version); }
+main.content :is(table.tw-revision, .tw-revision table) :is(th, td):nth-child(1) { width: var(--tw-rev-version); }
 
-.tw-revision :is(th, td):nth-child(2) {
+main.content :is(table.tw-revision, .tw-revision table) :is(th, td):nth-child(2) {
   width: var(--tw-rev-date);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 
-.tw-revision :is(th, td):nth-child(3) { width: var(--tw-rev-author); }
-.tw-revision :is(th, td):nth-child(4) { width: var(--tw-rev-summary); }
+main.content :is(table.tw-revision, .tw-revision table) :is(th, td):nth-child(3) { width: var(--tw-rev-author); }
+main.content :is(table.tw-revision, .tw-revision table) :is(th, td):nth-child(4) { width: var(--tw-rev-summary); }
 
 /* Wide reference tables scroll rather than squeeze. Print can't do this, so
    it shrinks the type instead — this is the better answer where it's
    available.                                                               */
-table:has(th:nth-child(6)) {
+main.content table:has(th:nth-child(6)) {
   display: block;
   overflow-x: auto;
   white-space: nowrap;
@@ -653,9 +655,9 @@ li.lc-generic   { border-left-color: var(--tw-neutral); }
 
   /* Every table becomes horizontally scrollable rather than crushing its
      columns to unreadable widths.                                          */
-  table { display: block; overflow-x: auto; }
+  main.content table { display: block; overflow-x: auto; }
 
-  .tw-revision table {
+  main.content :is(table.tw-revision, .tw-revision table) {
     table-layout: auto;
     white-space: normal;
   }

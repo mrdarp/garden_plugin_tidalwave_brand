@@ -29,6 +29,13 @@ Paste this repository's URL into **Settings → Digital Garden → Plugins → I
 | Setting | Default | Description |
 |---|---|---|
 | List callout markers | `!@&?~$%` | Characters treated as callout markers when they start a list item and are followed by a space. |
+| Revision table headers | `Version\|Date\|Author\|Change Summary` | Header row that identifies a revision-history table, so it can be given fixed column proportions. Matched case-insensitively. Empty disables it. |
+
+### Revision tables
+
+A table whose header row matches the configured signature gets a `tw-revision` class and fixed column proportions — narrow Version, Date and Author columns, with Change Summary taking the remainder. Without it, automatic layout gives the long summary column most of the width and squeezes the rest until "VERSION" wraps mid-word.
+
+This is matched in the markdown rule rather than in CSS, because a revision table is identified by the *text* of its header row and CSS cannot match text. Two positional approaches failed first: a `table:last-of-type` selector that quietly matched every four-column table on the site, and a hand-written `<div>` wrapper that worked but broke Obsidian's Live Preview, which doesn't parse markdown inside raw HTML. Matching at build time keeps the markdown clean, leaves the editor alone, and is exact rather than positional.
 
 The default is the full set the Obsidian List Callouts plugin ships, not a subset. **Leaving a marker out fails silently** — it publishes as literal text at the head of the bullet and nothing reports it — so narrowing this list is rarely what you want.
 

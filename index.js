@@ -103,6 +103,62 @@ function createRule(markerChars) {
   };
 }
 
+const DEFAULT_REVISION_HEADERS = "Version|Date|Author|Change Summary";
+
+/**
+ * Tag a table whose header row matches a known signature, so CSS can give it
+ * fixed column proportions.
+ *
+ * Why this is a markdown rule rather than a selector
+ * --------------------------------------------------
+ * A revision table is identified by the TEXT of its header row, and CSS has
+ * no way to match text. Two positional attempts failed before this one: a
+ * `table:last-of-type` selector that silently matched every four-column
+ * table on the site, and a hand-written `<div>` wrapper that worked but
+ * broke Obsidian's Live Preview, which does not parse markdown inside raw
+ * HTML blocks.
+ *
+ * Doing it at build time avoids both. The markdown stays clean, the editor
+ * is untouched, and the match is exact rather than positional.
+ */
+function createTableRule(headerSignature) {
+  const want = String(headerSignature || "")
+    .split("|")
+    .map(s => s.trim().toLowerCase())
+    .filter(Boolean);
+
+  if (want.length < 2) return null;
+
+  const clean = s => String(s || "").replace(/[*_`]/g, "").trim().toLowerCase();
+
+  return function tidalwaveRevisionTable(state) {
+    if (!state || !Array.isArray(state.tokens)) return;
+
+    const tokens = state.tokens;
+
+    for (let i = 0; i < tokens.length; i++) {
+      if (tokens[i].type !== "table_open") continue;
+
+      const cells = [];
+      let inHead = false;
+
+      for (let j = i + 1; j < tokens.length; j++) {
+        const type = tokens[j].type;
+        if (type === "thead_open") { inHead = true; continue; }
+        if (type === "thead_close" || type === "table_close") break;
+        if (inHead && type === "inline") cells.push(clean(tokens[j].content));
+      }
+
+      if (cells.length !== want.length) continue;
+      if (!cells.every((c, k) => c === want[k])) continue;
+
+      if (typeof tokens[i].attrJoin === "function") {
+        tokens[i].attrJoin("class", "tw-revision");
+      }
+    }
+  };
+}
+
 module.exports = {
   /**
    * @param {object} md      markdown-it instance
@@ -110,8 +166,17 @@ module.exports = {
    */
   setupMarkdown(md, context) {
     const settings = (context && context.settings) || {};
-    const markers = settings.markers || DEFAULT_MARKERS;
 
+    const markers = settings.markers || DEFAULT_MARKERS;
     md.core.ruler.before("inline", "tidalwave_list_callouts", createRule(markers));
+
+    const headers = settings.revisionTableHeaders === undefined
+      ? DEFAULT_REVISION_HEADERS
+      : settings.revisionTableHeaders;
+
+    const tableRule = createTableRule(headers);
+    if (tableRule) {
+      md.core.ruler.before("inline", "tidalwave_revision_table", tableRule);
+    }
   },
 };
