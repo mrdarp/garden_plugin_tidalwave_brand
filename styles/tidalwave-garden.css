@@ -115,6 +115,59 @@
 
 
 /* ---------------------------------------------------------------------------
+   2b. THEME VARIABLE MAPPING
+   ---------------------------------------------------------------------------
+   The garden ships an Obsidian theme, and that theme colors everything
+   through Obsidian's own CSS variables. Setting our own tokens is not
+   enough: a rule like `body { color: var(--tw-ink) }` is specificity 0,0,1
+   and loses to the theme's more specific selectors, which resolve to
+   `var(--text-normal)`.
+
+   That mismatch is exactly how a page ends up with a white background from
+   this stylesheet and #dadada body text from a dark theme — technically both
+   applied, jointly unreadable.
+
+   So instead of fighting the theme, feed it. Mapping the brand tokens onto
+   the variables the theme already reads means its own rules produce our
+   colors, at whatever specificity it uses.
+
+   `body.theme-dark` / `body.theme-light` are matched explicitly because the
+   theme defines these under a `.theme-dark` class on <body>; 0,1,1 beats its
+   0,1,0 regardless of load order. A consequence worth knowing: the light/dark
+   choice in the Forestry dashboard no longer drives colors here — this
+   stylesheet does. Set it to light anyway so anything unmapped lands in the
+   right family.
+   --------------------------------------------------------------------------- */
+
+:root,
+body.theme-light,
+body.theme-dark {
+  --background-primary:          var(--tw-bg);
+  --background-primary-alt:      var(--tw-bg-subtle);
+  --background-secondary:        var(--tw-bg-subtle);
+  --background-secondary-alt:    var(--tw-bg-subtle);
+  --background-modifier-border:  var(--tw-rule);
+  --background-modifier-hover:   var(--tw-bg-subtle);
+
+  --text-normal:        var(--tw-ink);
+  --text-muted:         var(--tw-ink-muted);
+  --text-faint:         var(--tw-ink-faint);
+  --text-title-h1:      var(--tw-ink);
+  --text-title-h2:      var(--tw-ink);
+  --text-title-h3:      var(--tw-ink);
+
+  --text-accent:        var(--tw-accent-link);
+  --text-accent-hover:  var(--tw-accent);
+  --interactive-accent: var(--tw-accent);
+  --text-on-accent:     #ffffff;
+
+  --font-text:      var(--tw-font);
+  --font-interface: var(--tw-font);
+  --font-monospace: var(--tw-font-mono);
+}
+
+
+/* ---------------------------------------------------------------------------
    3. BASE
    --------------------------------------------------------------------------- */
 
@@ -190,8 +243,12 @@ hr {
    each major section, sentence case throughout. Only the colors differ.
    --------------------------------------------------------------------------- */
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--tw-font);
+/* Scoped to main.content rather than bare elements. The theme sets heading
+   faces through its own variables at higher specificity than `h2 {}`, which
+   is how headings ended up rendering in Instrument Serif while body text
+   correctly used Bio Sans. 0,2,1 here settles it.                          */
+main.content :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--tw-font) !important;
   color: var(--tw-ink);
   line-height: 1.25;
 }
@@ -213,11 +270,12 @@ h2 {
   border-top: 1px solid var(--tw-rule);
 }
 
-h2:first-of-type {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: none;
-}
+/* NOTE: no `h2:first-of-type` margin reset here, unlike the print layer.
+   In print the first H2 really is the first thing after the title block, so
+   collapsing its top margin avoids stacking two rules. On the web the page
+   title is followed by the frontmatter tag row, and zeroing the margin left
+   the first heading pressed right up against those tags. The first H2 keeps
+   its normal spacing and hairline, which separates it from the tags.       */
 
 h3 {
   font-size: var(--tw-size-h3);
@@ -308,47 +366,21 @@ main li > ul,
 main li > ol { margin-top: calc(var(--tw-space) * 0.6); margin-bottom: 0; }
 
 
-/* ---- Chrome list reset ------------------------------------------------- */
-/* Site furniture keeps the theme's own list rendering, whatever its
-   position in the document. Anything matched here is navigation, not
-   content, and must never receive procedure-step treatment.              */
-:is(nav, aside, header, footer,
-    [class*="toc"], [class*="sidebar"], [class*="filetree"],
-    [class*="nav"], [class*="graph"], [class*="search"]) :is(ol, ul) {
-  counter-reset: none !important;
-  list-style: revert;
-  padding-left: revert;
-  margin: revert;
-}
+/* NO CHROME RESET BLOCK HERE — deliberately.
+   An earlier version carried one, restoring `list-style: revert` on lists in
+   nav/sidebar containers. That was worse than the problem it was written for.
+   `revert` rolls a property back to the USER-AGENT value, not to the theme's
+   value, so on an <ol> it resolves to `decimal` — reintroducing numbering the
+   theme had deliberately removed, and putting "1." "2." beside every table-of-
+   contents entry.
 
-:is(nav, aside, header, footer,
-    [class*="toc"], [class*="sidebar"], [class*="filetree"],
-    [class*="nav"], [class*="graph"], [class*="search"]) :is(ol, ul) > li {
-  counter-increment: none !important;
-  position: static;
-  padding-left: revert;
-  margin-bottom: revert;
-}
+   Verified against the live site: the table of contents sits at
+   `nav.toc < div.toc-container < div.toc < div.sidebar-container < div.sidebar`,
+   entirely outside <main>. The `main` scope above is therefore sufficient on
+   its own, and any reset is not just redundant but actively destructive.
 
-:is(nav, aside, header, footer,
-    [class*="toc"], [class*="sidebar"], [class*="filetree"],
-    [class*="nav"], [class*="graph"], [class*="search"]) :is(ol, ul) > li::before {
-  content: none !important;
-}
-
-/* Headings in site furniture keep the theme's rendering too — a heading rule
-   written for document sections puts a hairline and 2.25rem of space above
-   anything it reaches, which is wrong for a sidebar label.                 */
-:is(nav, aside, header, footer,
-    [class*="toc"], [class*="sidebar"], [class*="filetree"],
-    [class*="nav"], [class*="graph"], [class*="search"]) :is(h1, h2, h3, h4, h5, h6) {
-  border: none !important;
-  padding-top: 0 !important;
-  margin: revert;
-  font-size: revert;
-  font-weight: revert;
-  letter-spacing: revert;
-}
+   If site furniture ever does need protecting, the fix is a narrower scope on
+   our own rules — never `revert` on someone else's. */
 
 
 /* ---------------------------------------------------------------------------

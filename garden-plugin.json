@@ -1,7 +1,7 @@
 {
   "id": "tidalwave-brand",
   "name": "Tidalwave Brand",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "House typography, color and section styling for Tidalwave training documentation, plus markdown support for Obsidian List Callouts markers.",
   "author": "Sean",
   "styles": [
