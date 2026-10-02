@@ -255,6 +255,20 @@ hr {
    each major section, sentence case throughout. Only the colors differ.
    --------------------------------------------------------------------------- */
 
+/* The brand face applies everywhere; only the structural styling below is
+   scoped. The site renders document content in more places than <main> —
+   the search overlay has its own `div.search-preview-panel > .preview-content`
+   outside it — and scoping the font along with the layout left headings in
+   those panes falling back to the theme's serif while their body text,
+   styled globally, was already Bio Sans.
+
+   Font family is safe to apply site-wide. Size, weight, margins and rules
+   are not: those are tuned for a document column and would look wrong on a
+   sidebar label or in a compact preview pane.                              */
+:is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--tw-font) !important;
+}
+
 /* Scoped to main.content rather than bare elements. The theme sets heading
    faces through its own variables at higher specificity than `h2 {}`, which
    is how headings ended up rendering in Instrument Serif while body text
